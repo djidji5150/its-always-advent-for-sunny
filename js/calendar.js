@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var TZ = "Europe/Belgrade";
+  var TZ = "Europe/Sarajevo";
   var YEAR = 2026;
   var FIRST_DAY = 6;
   var LAST_DAY = 30;
@@ -59,7 +59,7 @@
     return new Date(result);
   }
 
-  function belgradeISO(date) {
+  function localISO(date) {
     var parts = {};
     new Intl.DateTimeFormat("en-CA", {
       timeZone: TZ,
@@ -155,7 +155,7 @@
 
   function doorState(date, now, opened) {
     var unlockAt = zonedDateTime(date, UNLOCK_HOUR);
-    var today = belgradeISO(now);
+    var today = localISO(now);
     var unlocked = now.getTime() >= unlockAt.getTime();
     var ready = Boolean(recipeFor(date));
     var read = opened.has(date) && ready;
@@ -186,10 +186,10 @@
         " from now."
       );
     }
-    if (now.getTime() >= lastUnlock.getTime() && belgradeISO(now) > dates[dates.length - 1]) {
+    if (now.getTime() >= lastUnlock.getTime() && localISO(now) > dates[dates.length - 1]) {
       return "The calendar is complete. Every door stays open.";
     }
-    var today = belgradeISO(now);
+    var today = localISO(now);
     if (dates.indexOf(today) !== -1) {
       var unlockAt = zonedDateTime(today, UNLOCK_HOUR);
       if (now.getTime() < unlockAt.getTime()) {
@@ -205,7 +205,7 @@
   function paint() {
     var now = getNow();
     var opened = readOpened();
-    var today = belgradeISO(now);
+    var today = localISO(now);
     statusEl.textContent = statusMessage(now);
     previewEl.hidden = !previewLabel;
     previewEl.textContent = previewLabel;
@@ -404,7 +404,7 @@
       button.classList.add("is-shaking");
       var when = formatWhen(date);
       showToast(
-        date === belgradeISO(now)
+        date === localISO(now)
           ? "Today’s meal is set out at 8:00."
           : "This door opens on " + when + " at 8:00."
       );

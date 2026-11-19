@@ -1,6 +1,6 @@
 # It's Always Advent for Sunny
 
-An advent calendar for Sunčica. One home-cooked meal a day, from 6 December through 30 December 2026. Each door opens at 8:00 in the morning, Belgrade time.
+An advent calendar for Sunčica. One home-cooked meal a day, from 6 December through 30 December 2026. Each door opens at 8:00 in the morning, Banjaluka time.
 
 25 December is the Harry Potter door. The window dresses itself — you only add the meal.
 
