@@ -470,7 +470,79 @@
     document.body.classList.remove("is-magic");
   });
 
+  function safeLink(url) {
+    if (typeof url !== "string") return "";
+    var trimmed = url.trim();
+    if (/^https:\/\/\S+$/i.test(trimmed)) return trimmed;
+    return "";
+  }
+
+  function renderNotes() {
+    var root = document.getElementById("notes-body");
+    if (!root) return;
+    var notes = window.NOTES || {};
+    var links = Array.isArray(notes.links) ? notes.links : [];
+    var tips = Array.isArray(notes.tips) ? notes.tips : [];
+    var linkItems = links.filter(function (item) {
+      return item && typeof item.title === "string" && item.title.trim();
+    });
+    var tipItems = tips
+      .map(function (tip) {
+        return String(tip).trim();
+      })
+      .filter(Boolean);
+
+    root.replaceChildren();
+    if (!linkItems.length && !tipItems.length) {
+      root.appendChild(
+        el(
+          "p",
+          "notes-empty",
+          "The list is still on the counter. Links and kitchen notes will show up here as they’re written down."
+        )
+      );
+      return;
+    }
+
+    if (linkItems.length) {
+      root.appendChild(el("h3", "notes-label", "Links"));
+      var list = el("ul", "note-links");
+      linkItems.forEach(function (item) {
+        var li = el("li");
+        var href = safeLink(item.url);
+        var label = item.title.trim();
+        if (href) {
+          var anchor = el("a", "note-link", label);
+          anchor.href = href;
+          anchor.target = "_blank";
+          anchor.rel = "noopener noreferrer";
+          li.appendChild(anchor);
+        } else {
+          li.appendChild(el("p", "note-link", label));
+        }
+        if (typeof item.note === "string" && item.note.trim()) {
+          li.appendChild(el("p", "note-detail", item.note.trim()));
+        }
+        list.appendChild(li);
+      });
+      root.appendChild(list);
+    }
+
+    if (tipItems.length) {
+      root.appendChild(el("h3", "notes-label", "Tips"));
+      var tipsList = el("ul", "note-tips");
+      tipItems.forEach(function (tip) {
+        var li = el("li");
+        li.appendChild(el("span", "marker"));
+        li.appendChild(el("span", "", tip));
+        tipsList.appendChild(li);
+      });
+      root.appendChild(tipsList);
+    }
+  }
+
   buildDoors();
+  renderNotes();
   paint();
   window.setInterval(paint, 1000);
 })();

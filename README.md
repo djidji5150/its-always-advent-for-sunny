@@ -31,6 +31,27 @@ window.RECIPES = {
 
 `note`, `serves`, `time`, `image`, and `imageAlt` can be left out. Photos go in an `images` folder, or use an `https` link.
 
+## Add a link or a tip
+
+Edit `js/notes.js`.
+
+```js
+window.NOTES = {
+  links: [
+    {
+      title: "How to roast a pepper",
+      url: "https://example.com/peppers",
+      note: "The one with the oven method."
+    }
+  ],
+  tips: [
+    "Salt the pasta water until it tastes like the sea."
+  ]
+};
+```
+
+`url` has to start with `https://`. `note` can be left out.
+
 ## Preview a door
 
 Real doors stay shut until 8:00 on their own day. While you are writing recipes:
