@@ -83,22 +83,25 @@
     }).format(zonedDateTime(iso, 12));
   }
 
+  function unit(value, word) {
+    return value + " " + (value === 1 ? word : word + "s");
+  }
+
   function formatDistance(ms) {
-    var totalMinutes = Math.max(0, Math.ceil(ms / 60000));
-    if (totalMinutes <= 1) return "less than a minute";
-    if (totalMinutes < 60) return totalMinutes + " minutes";
-    var hours = Math.floor(totalMinutes / 60);
-    var minutes = totalMinutes % 60;
-    if (hours < 24) {
-      var hourLabel = hours === 1 ? "1 hour" : hours + " hours";
-      if (!minutes) return hourLabel;
-      return hourLabel + " " + (minutes === 1 ? "1 minute" : minutes + " minutes");
-    }
-    var days = Math.floor(totalMinutes / 1440);
-    var leftoverHours = Math.floor((totalMinutes - days * 1440) / 60);
-    var dayLabel = days === 1 ? "1 day" : days + " days";
-    if (!leftoverHours) return dayLabel;
-    return dayLabel + " and " + (leftoverHours === 1 ? "1 hour" : leftoverHours + " hours");
+    var totalSeconds = Math.max(0, Math.floor(ms / 1000));
+    var days = Math.floor(totalSeconds / 86400);
+    var hours = Math.floor((totalSeconds % 86400) / 3600);
+    var minutes = Math.floor((totalSeconds % 3600) / 60);
+    var seconds = totalSeconds % 60;
+    return (
+      unit(days, "day") +
+      ", " +
+      unit(hours, "hour") +
+      ", " +
+      unit(minutes, "minute") +
+      " and " +
+      unit(seconds, "second")
+    );
   }
 
   function isISODate(value) {
@@ -461,5 +464,5 @@
 
   buildDoors();
   paint();
-  window.setInterval(paint, 30000);
+  window.setInterval(paint, 1000);
 })();
