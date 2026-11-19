@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>It's Always Advent for Sunny</title>
+    <meta
+      name="description"
+      content="A home-cooked advent calendar for Sunčica. One new meal each morning, from 6 to 30 December."
+    />
+    <meta name="theme-color" content="#14211c" />
+    <meta property="og:title" content="It's Always Advent for Sunny" />
+    <meta
+      property="og:description"
+      content="A home-cooked advent calendar for Sunčica. One new meal each morning, from 6 to 30 December."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://djidji5150.github.io/its-always-advent-for-sunny/" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@560;650&family=Fraunces:ital,opsz,wght@0,9..144,520;0,9..144,650;1,9..144,560&family=Outfit:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="snow" aria-hidden="true"></div>
+    <svg class="grain" aria-hidden="true">
+      <filter id="grain">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#grain)" />
+    </svg>
+
+    <div class="lights" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="wrap">
+      <header class="hero">
+        <div class="hero-mark" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <g fill="none" stroke="#f0d394" stroke-width="3" stroke-linecap="round">
+              <path d="M70 14v14M70 112v14M14 70h14M112 70h14" />
+              <path d="M30 30l10 10M100 100l10 10M30 110l10-10M100 40l10-10" />
+            </g>
+            <circle cx="70" cy="70" r="30" fill="#f6c56b" />
+            <circle cx="70" cy="70" r="30" fill="none" stroke="#a8752d" stroke-width="2" />
+            <circle cx="59" cy="66" r="2.4" fill="#6a3b16" />
+            <circle cx="81" cy="66" r="2.4" fill="#6a3b16" />
+            <path d="M60 78c4 5 16 5 20 0" fill="none" stroke="#6a3b16" stroke-width="2" stroke-linecap="round" />
+            <path d="M46 82c10 12 38 12 48 0" fill="none" stroke="#8d3b3b" stroke-width="6.5" stroke-linecap="round" />
+            <path d="M90 84c8 10 8 24 2 34" fill="none" stroke="#8d3b3b" stroke-width="6.5" stroke-linecap="round" />
+            <path d="M88 116l8 3-7 4" fill="#f0d394" />
+          </svg>
+        </div>
+        <p class="eyebrow">December 2026 · for Sunčica</p>
+        <h1>It’s always <em>advent</em> for Sunny</h1>
+        <p class="lede">
+          Twenty-five mornings, twenty-five home cooked meals. A new door at 8, from the 6th through the 30th.
+        </p>
+        <p class="status" id="status" role="status"></p>
+        <p class="preview-banner" id="preview-banner" hidden></p>
+      </header>
+
+      <main>
+        <section class="house" aria-label="Advent calendar">
+          <div class="garland" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <ol class="doors" id="doors"></ol>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>For Sunčica, with a full kitchen.</p>
+        <p>Every door opens at 8:00 in Belgrade.</p>
+      </footer>
+    </div>
+
+    <p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+    <dialog class="sheet" id="recipe" aria-labelledby="recipe-title"></dialog>
+    <noscript>
+      <p class="noscript">This calendar needs JavaScript so the doors know what time it is.</p>
+    </noscript>
+    <script src="js/recipes.js"></script>
+    <script src="js/calendar.js"></script>
+  </body>
+</html>
