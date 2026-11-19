@@ -438,7 +438,15 @@
 
       if (date === MAGIC_DAY) {
         panel.appendChild(glassesIcon());
-        panel.appendChild(el("span", "door-theme", "Harry Potter"));
+        var theme = el("span", "door-theme", "Harry Potter");
+        theme.setAttribute("aria-hidden", "true");
+        panel.appendChild(theme);
+        /* Harry P draws the book-cover letters from these characters. See fonts/harryp-readme.txt. */
+        if (document.fonts && document.fonts.load) {
+          document.fonts.load('16px "Harry P"').then(function (loaded) {
+            if (loaded && loaded.length) theme.textContent = "Har\u00A1y Pot\u00A4e\u00A5";
+          });
+        }
       }
 
       panel.appendChild(el("span", "door-state", ""));
