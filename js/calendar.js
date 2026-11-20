@@ -463,6 +463,9 @@
     });
   }
 
+  var waiting = document.getElementById("waiting");
+  var waitingDismissed = false;
+
   dialog.addEventListener("click", function (event) {
     if (event.target === dialog) dialog.close();
   });
@@ -470,7 +473,36 @@
     document.body.classList.remove("is-magic");
   });
 
+  if (waiting) {
+    waiting.addEventListener("click", function (event) {
+      if (event.target === waiting) waiting.close();
+    });
+    waiting.addEventListener("close", function () {
+      waitingDismissed = true;
+    });
+    var waitingClose = document.getElementById("waiting-close");
+    if (waitingClose) {
+      waitingClose.addEventListener("click", function () {
+        waiting.close();
+      });
+    }
+  }
+
+  function syncWaiting(now) {
+    if (!waiting || typeof waiting.showModal !== "function") return;
+    var stillWaiting = now.getTime() < zonedDateTime(dates[0], UNLOCK_HOUR).getTime();
+    if (!stillWaiting) {
+      if (waiting.open) waiting.close();
+      return;
+    }
+    if (!waitingDismissed && !waiting.open) waiting.showModal();
+  }
+
   buildDoors();
   paint();
-  window.setInterval(paint, 1000);
+  syncWaiting(getNow());
+  window.setInterval(function () {
+    paint();
+    syncWaiting(getNow());
+  }, 1000);
 })();

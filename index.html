@@ -83,6 +83,45 @@
     </div>
 
     <p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+    <dialog class="waiting" id="waiting" aria-labelledby="waiting-title">
+      <div class="waiting-card">
+        <div class="card-top">
+          <p class="kicker">Until 6 December</p>
+          <button type="button" class="close" id="waiting-close">Close</button>
+        </div>
+        <h2 id="waiting-title">While you wait</h2>
+        <p class="waiting-lede">The first door is still shut. Here are a few ways to pass the time.</p>
+        <ul class="picks">
+          <li class="pick">
+            <div>
+              <h3>The 100 Best Christmas Movies of All Time</h3>
+              <p>Home Alone, Elf, and the classics, ranked.</p>
+            </div>
+            <a class="brand brand--rt" href="https://editorial.rottentomatoes.com/guide/best-christmas-movies/" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" fill="#fff"/><path d="M8 6c2-3 6-3 8 0" fill="none" stroke="#2f7a45" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="12" r="1" fill="#fa320a"/><circle cx="15" cy="12" r="1" fill="#fa320a"/></svg>
+              Rotten Tomatoes
+            </a>
+          </li>
+          <li class="pick">
+            <div>
+              <h3>The Top 100 Christmas Movies of All Time</h3>
+              <p>From It’s a Wonderful Life to Elf.</p>
+            </div>
+            <a class="brand brand--imdb" href="https://www.imdb.com/list/ls000096828/" target="_blank" rel="noopener noreferrer">IMDb</a>
+          </li>
+          <li class="pick">
+            <div>
+              <h3>World’s Best Christmas Playlist</h3>
+              <p>Brenda Lee, Bing Crosby, Mariah Carey, and the rest of the carols.</p>
+            </div>
+            <a class="brand brand--spotify" href="https://open.spotify.com/playlist/1zOEqfxkCekU1Y6nZoeuyI" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#111"/><path d="M7 10.2c3.2-1 6.8-.7 9.8.8M7.6 13.2c2.5-.8 5.3-.5 7.6.7M8.2 16c1.8-.5 3.8-.3 5.4.5" fill="none" stroke="#1db954" stroke-width="1.6" stroke-linecap="round"/></svg>
+              Spotify
+            </a>
+          </li>
+        </ul>
+      </div>
+    </dialog>
     <dialog class="sheet" id="recipe" aria-labelledby="recipe-title"></dialog>
     <noscript>
       <p class="noscript">This calendar needs JavaScript so the doors know what time it is.</p>

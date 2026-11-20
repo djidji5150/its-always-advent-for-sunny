@@ -505,10 +505,117 @@ h1 em {
   overflow: hidden;
 }
 
-.sheet::backdrop {
+.sheet::backdrop,
+.waiting::backdrop {
   background: rgba(10, 14, 12, 0.64);
   backdrop-filter: blur(5px);
 }
+
+.waiting {
+  width: min(640px, calc(100vw - 20px));
+  max-height: min(88dvh, 920px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  color-scheme: light;
+  overflow: hidden;
+}
+
+.waiting-card {
+  padding: 1.2rem 1.25rem 1.4rem;
+  border-radius: 22px;
+  max-height: min(88dvh, 920px);
+  overflow: auto;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent 90px),
+    var(--paper);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+  animation: rise 0.38s ease;
+}
+
+.waiting-card h2 {
+  margin: 0.15rem 0 0.4rem;
+  text-align: center;
+  font-family: Fraunces, Palatino, serif;
+  font-weight: 560;
+  font-size: clamp(2.1rem, 5vw, 3rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.waiting-lede {
+  margin: 0 auto 1rem;
+  max-width: 28rem;
+  text-align: center;
+  line-height: 1.45;
+}
+
+.picks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.pick {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: 16px;
+  background: rgba(168, 117, 45, 0.08);
+}
+
+.pick h3 {
+  margin: 0;
+  font-family: Fraunces, Palatino, serif;
+  font-size: 1.15rem;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.pick p {
+  margin: 0.25rem 0 0;
+  line-height: 1.35;
+  font-size: 0.92rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand svg { width: 22px; height: 22px; display: block; }
+
+.brand--rt { background: #fa320a; color: #fff; }
+.brand--imdb {
+  background: #f5c518;
+  color: #111;
+  font-family: Outfit, "Avenir Next", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  padding-inline: 1rem;
+}
+.brand--spotify { background: #1db954; color: #111; }
+
+.brand:focus-visible { outline: 3px solid var(--gold-deep); outline-offset: 2px; }
+.brand--rt:hover { background: #d92706; }
+.brand--imdb:hover { background: #e0b40f; }
+.brand--spotify:hover { background: #18a349; }
 
 .sheet--magic::backdrop {
   background:
@@ -774,6 +881,10 @@ h1 em {
 
   .house { padding: 22px 18px 18px; }
   .card { padding: 1.4rem 1.7rem 1.8rem; }
+}
+
+@media (max-width: 560px) {
+  .pick { flex-direction: column; align-items: flex-start; }
 }
 
 @media (max-width: 420px) {
