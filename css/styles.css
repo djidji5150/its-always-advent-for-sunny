@@ -266,6 +266,41 @@ h1 em {
   line-height: 1.45;
 }
 
+.wait-tab {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  margin: 14px auto 0;
+  padding: 0.62rem 1.2rem 0.72rem;
+  border: 1px solid rgba(240, 211, 148, 0.72);
+  border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(176, 42, 48, 0.5), transparent 58%),
+    #143528;
+  color: #f3d7a1;
+  font: inherit;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.wait-tab:hover,
+.wait-tab:focus-visible {
+  color: #fffaf2;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(196, 58, 64, 0.62), transparent 58%),
+    #1c4a36;
+}
+
+.wait-tab:focus-visible {
+  outline: 3px solid #f0d394;
+  outline-offset: 3px;
+}
+
+.wait-tab[hidden] { display: none !important; }
+
 .preview-banner {
   max-width: 40rem;
   margin: 14px auto 0;

@@ -464,6 +464,7 @@
   }
 
   var waiting = document.getElementById("waiting");
+  var waitTab = document.getElementById("wait-tab");
   var waitingDismissed = false;
   var waitingReached = false;
   var waitingStart = window.scrollY;
@@ -490,6 +491,14 @@
     }
   }
 
+  if (waitTab) {
+    waitTab.addEventListener("click", function () {
+      if (!waiting || typeof waiting.showModal !== "function") return;
+      if (!stillWaitingFor(getNow())) return;
+      if (!waiting.open) waiting.showModal();
+    });
+  }
+
   function stillWaitingFor(now) {
     return now.getTime() < zonedDateTime(dates[0], UNLOCK_HOUR).getTime();
   }
@@ -502,8 +511,10 @@
   }
 
   function syncWaiting(now) {
+    var still = stillWaitingFor(now);
+    if (waitTab) waitTab.hidden = !still;
     if (!waiting) return;
-    if (!stillWaitingFor(now) && waiting.open) waiting.close();
+    if (!still && waiting.open) waiting.close();
   }
 
   function onWaitingScroll() {
@@ -523,6 +534,7 @@
 
   buildDoors();
   paint();
+  syncWaiting(getNow());
   window.setInterval(function () {
     paint();
     syncWaiting(getNow());
