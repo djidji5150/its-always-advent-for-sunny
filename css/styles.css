@@ -618,15 +618,37 @@ h1 em {
 }
 
 .waiting-card {
+  position: relative;
   padding: 1.2rem 1.25rem 1.4rem;
   border-radius: 22px;
   max-height: min(88dvh, 920px);
   overflow: auto;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent 90px),
-    var(--paper);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+  color: #f7f1e6;
+  scrollbar-color: #e7c98a transparent;
+  background-color: #143528;
+  background-image:
+    radial-gradient(circle at 8% 0%, rgba(176, 42, 48, 0.55), transparent 34%),
+    radial-gradient(circle at 96% 12%, rgba(240, 211, 148, 0.28), transparent 28%),
+    radial-gradient(circle at 50% 120%, rgba(212, 168, 74, 0.16), transparent 42%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='220' viewBox='0 0 320 220'%3E%3Cg fill='none' stroke='%23fff' stroke-linecap='round' opacity='.34'%3E%3Cg transform='translate(46 48)'%3E%3Cpath d='M0-14v28M-12-7 12 7M-12 7 12-7' stroke-width='1.2'/%3E%3Cpath d='M0-8v-4M0 8v4M-7-4-10-7M7 4l3 3M-7 4-10 7M7-4l3-3' stroke-width='1'/%3E%3C/g%3E%3Cg transform='translate(230 150) scale(.72)'%3E%3Cpath d='M0-14v28M-12-7 12 7M-12 7 12-7' stroke-width='1.2'/%3E%3Cpath d='M0-8v-4M0 8v4M-7-4-10-7M7 4l3 3M-7 4-10 7M7-4l3-3' stroke-width='1'/%3E%3C/g%3E%3Cg transform='translate(250 36) scale(.45)'%3E%3Cpath d='M0-14v28M-12-7 12 7M-12 7 12-7' stroke-width='1.4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: auto, auto, auto, 320px 220px;
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 211, 148, 0.7),
+    inset 0 0 0 7px rgba(16, 42, 30, 0.45),
+    0 24px 70px rgba(0, 0, 0, 0.38);
   animation: rise 0.38s ease;
+}
+
+.waiting-card .card-top {
+  background: transparent;
+}
+
+.waiting-card .kicker { color: #f3d7a1; }
+
+.waiting-card .close {
+  background: rgba(255, 250, 242, 0.92);
+  color: #1c3428;
+  border-color: transparent;
 }
 
 .waiting-card h2 {
@@ -637,6 +659,7 @@ h1 em {
   font-size: clamp(2.1rem, 5vw, 3rem);
   letter-spacing: -0.03em;
   line-height: 1;
+  color: #fffaf2;
 }
 
 .waiting-lede {
@@ -644,6 +667,7 @@ h1 em {
   max-width: 28rem;
   text-align: center;
   line-height: 1.45;
+  color: rgba(247, 241, 230, 0.9);
 }
 
 .kitten-bar {
@@ -659,8 +683,8 @@ h1 em {
   bottom: 4px;
   height: 9px;
   border-radius: 999px;
-  background: rgba(168, 117, 45, 0.16);
-  box-shadow: inset 0 1px 2px rgba(90, 50, 20, 0.12);
+  background: rgba(255, 250, 242, 0.22);
+  box-shadow: inset 0 1px 2px rgba(8, 20, 14, 0.25);
   overflow: hidden;
 }
 
@@ -747,7 +771,8 @@ h1 em {
   gap: 0.9rem;
   padding: 0.85rem 0.9rem;
   border-radius: 16px;
-  background: rgba(168, 117, 45, 0.08);
+  background: rgba(255, 250, 242, 0.96);
+  color: var(--ink);
 }
 
 .pick h3 {
