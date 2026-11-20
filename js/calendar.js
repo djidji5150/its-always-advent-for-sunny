@@ -465,6 +465,8 @@
 
   var waiting = document.getElementById("waiting");
   var waitingDismissed = false;
+  var waitingReached = false;
+  var waitingStart = window.scrollY;
 
   dialog.addEventListener("click", function (event) {
     if (event.target === dialog) dialog.close();
@@ -488,19 +490,39 @@
     }
   }
 
-  function syncWaiting(now) {
-    if (!waiting || typeof waiting.showModal !== "function") return;
-    var stillWaiting = now.getTime() < zonedDateTime(dates[0], UNLOCK_HOUR).getTime();
-    if (!stillWaiting) {
-      if (waiting.open) waiting.close();
-      return;
-    }
-    if (!waitingDismissed && !waiting.open) waiting.showModal();
+  function stillWaitingFor(now) {
+    return now.getTime() < zonedDateTime(dates[0], UNLOCK_HOUR).getTime();
   }
+
+  function reachedMiddle() {
+    var scrolling = document.scrollingElement || document.documentElement;
+    var maxScroll = scrolling.scrollHeight - window.innerHeight;
+    if (maxScroll <= 0) return false;
+    return scrolling.scrollTop >= maxScroll * 0.5;
+  }
+
+  function syncWaiting(now) {
+    if (!waiting) return;
+    if (!stillWaitingFor(now) && waiting.open) waiting.close();
+  }
+
+  function onWaitingScroll() {
+    if (!waiting || waitingDismissed || waitingReached) return;
+    if (typeof waiting.showModal !== "function") return;
+    if (!stillWaitingFor(getNow())) return;
+    var scrolling = document.scrollingElement || document.documentElement;
+    if (Math.abs(scrolling.scrollTop - waitingStart) < 12) return;
+    if (!reachedMiddle()) return;
+    try {
+      waiting.showModal();
+      waitingReached = true;
+    } catch (err) {}
+  }
+
+  window.addEventListener("scroll", onWaitingScroll, { passive: true });
 
   buildDoors();
   paint();
-  syncWaiting(getNow());
   window.setInterval(function () {
     paint();
     syncWaiting(getNow());
