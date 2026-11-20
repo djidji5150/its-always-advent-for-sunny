@@ -268,15 +268,17 @@ h1 em {
 
 .wait-tab {
   appearance: none;
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  width: fit-content;
   margin: 14px auto 0;
   padding: 0.62rem 1.2rem 0.72rem;
   border: 1px solid rgba(240, 211, 148, 0.72);
   border-bottom: 0;
   border-radius: 16px 16px 0 0;
   background:
-    radial-gradient(circle at 10% 0%, rgba(176, 42, 48, 0.5), transparent 58%),
+    radial-gradient(circle at 50% 0%, rgba(176, 42, 48, 0.5), transparent 58%),
     #143528;
   color: #f3d7a1;
   font: inherit;
@@ -290,7 +292,7 @@ h1 em {
 .wait-tab:focus-visible {
   color: #fffaf2;
   background:
-    radial-gradient(circle at 10% 0%, rgba(196, 58, 64, 0.62), transparent 58%),
+    radial-gradient(circle at 50% 0%, rgba(196, 58, 64, 0.62), transparent 58%),
     #1c4a36;
 }
 
