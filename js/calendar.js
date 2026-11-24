@@ -535,35 +535,17 @@
   var loader = document.getElementById("loader");
   var loaderCount = document.getElementById("loader-count");
   var loaderWhen = document.getElementById("loader-when");
-  var loaderEnter = document.getElementById("loader-enter");
-  var loaderGone = !loader || document.documentElement.classList.contains("advent-open");
-  var loaderHeld = [
-    document.querySelector(".wrap"),
-    document.getElementById("toast"),
-    document.getElementById("waiting"),
-    document.getElementById("recipe"),
-  ];
-
-  function releaseLoader() {
-    loaderHeld.forEach(function (el) {
-      if (el) el.inert = false;
-    });
-  }
+  var loaderGone = !loader || loader.hidden || document.documentElement.classList.contains("advent-open");
 
   function endLoader() {
     if (loaderGone) return;
     loaderGone = true;
-    document.documentElement.classList.remove("is-loading");
-    releaseLoader();
-    if (!loader) return;
-    loader.classList.add("is-done");
-    window.setTimeout(function () {
-      loader.hidden = true;
-    }, 460);
+    if (window.leaveLoader) window.leaveLoader();
+    else if (loader) loader.hidden = true;
   }
 
   function paintLoader(now) {
-    if (loaderGone) return;
+    if (loaderGone || !loader || loader.hidden) return;
     var firstUnlock = zonedDateTime(dates[0], UNLOCK_HOUR);
     if (now.getTime() >= firstUnlock.getTime()) {
       endLoader();
@@ -573,22 +555,7 @@
     if (loaderCount) loaderCount.textContent = formatDistance(firstUnlock.getTime() - now.getTime());
   }
 
-  if (loaderGone) {
-    if (loader) loader.hidden = true;
-    document.documentElement.classList.remove("is-loading");
-  } else {
-    loaderHeld.forEach(function (el) {
-      if (el) el.inert = true;
-    });
-    if (loaderEnter) {
-      loaderEnter.addEventListener("click", function (event) {
-        event.stopPropagation();
-        endLoader();
-      });
-    }
-    loader.addEventListener("click", endLoader);
-    window.setTimeout(endLoader, 6800);
-  }
+  if (!loaderGone) window.setTimeout(endLoader, 6800);
 
   buildDoors();
   paint();
