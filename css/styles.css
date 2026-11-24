@@ -132,9 +132,13 @@ html.advent-open .loader { display: none !important; }
   border-radius: 50%;
   cursor: pointer;
   background:
-    radial-gradient(circle at 32% 28%, #fff 0 4px, transparent 5px),
-    radial-gradient(circle at 40% 38%, #f6c9c9, #c62828 68%);
-  box-shadow: inset 0 -5px 0 rgba(90, 20, 20, 0.18), 0 8px 12px rgba(0, 0, 0, 0.22);
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0 4px, rgba(255, 255, 255, 0.35) 5px, transparent 16px),
+    radial-gradient(circle at 68% 74%, rgba(255, 255, 255, 0.28) 0 3px, transparent 9px),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0 54%, rgba(186, 220, 255, 0.16) 68%, rgba(255, 255, 255, 0.82) 78%, rgba(170, 210, 245, 0.2) 82%, transparent 84%);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.72),
+    inset -7px -8px 12px rgba(140, 186, 230, 0.28),
+    0 8px 14px rgba(0, 0, 0, 0.16);
 }
 
 .bauble.is-pop {
@@ -149,17 +153,23 @@ html.advent-open .loader { display: none !important; }
   height: 8px;
   margin: -4px 0 0 -4px;
   border-radius: 50%;
-  background: #e45b5b;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9);
   pointer-events: none;
   animation: bit-fly 0.34s ease-out forwards;
 }
 
-.bauble-bit--gold { background: #f0d394; }
+.bauble-bit--gold { background: rgba(255, 236, 196, 0.8); }
 
 .bauble--gold {
   background:
-    radial-gradient(circle at 32% 28%, #fff 0 3px, transparent 4px),
-    radial-gradient(circle at 40% 38%, #fff4d2, #e0b15a 64%, #a8752d);
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0 4px, rgba(255, 255, 255, 0.35) 5px, transparent 16px),
+    radial-gradient(circle at 68% 74%, rgba(255, 244, 214, 0.4) 0 3px, transparent 9px),
+    radial-gradient(circle at 50% 50%, rgba(255, 248, 230, 0.1) 0 54%, rgba(240, 210, 150, 0.2) 68%, rgba(255, 255, 255, 0.82) 78%, rgba(230, 190, 120, 0.28) 82%, transparent 84%);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 248, 230, 0.78),
+    inset -7px -8px 12px rgba(220, 170, 90, 0.28),
+    0 8px 14px rgba(0, 0, 0, 0.16);
 }
 
 .bauble:focus-visible {

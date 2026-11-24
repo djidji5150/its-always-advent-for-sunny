@@ -648,7 +648,7 @@
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "bauble" + (Math.random() > 0.45 ? " bauble--gold" : "");
-      btn.setAttribute("aria-label", "Catch bauble");
+      btn.setAttribute("aria-label", "Catch bubble");
       var room = Math.max(20, field.clientWidth - 64);
       var x = 8 + Math.random() * room;
       btn.style.left = x + "px";
