@@ -23,7 +23,7 @@
       href="https://fonts.googleapis.com/css2?family=Caveat:wght@560;650&family=Fraunces:ital,opsz,wght@0,9..144,520;0,9..144,650;1,9..144,560&family=Outfit:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/styles.css?v=bug" />
+    <link rel="stylesheet" href="css/styles.css?v=lives" />
     <script>
       (function () {
         var params = new URLSearchParams(location.search);
@@ -53,6 +53,7 @@
         <p class="loader-kicker">For Sunčica</p>
         <div class="catch" id="catch">
           <p class="catch-score">Streak <strong id="catch-now">0</strong> · Best <strong id="catch-best">0</strong></p>
+          <p class="catch-lives" id="catch-lives" aria-label="9 lives left"><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i></p>
           <div class="catch-field" id="catch-field">
             <div class="catch-cat" id="catch-cat" aria-hidden="true">
               <svg viewBox="0 -16 168 108">
@@ -91,8 +92,12 @@
                 </g>
               </svg>
             </div>
+            <div class="catch-over" id="catch-over" hidden>
+              <p>Game over</p>
+              <button type="button" class="catch-again" id="catch-again">Play again</button>
+            </div>
           </div>
-          <p class="catch-hint">Pop the bubbles and dodge the stink bug.</p>
+          <p class="catch-hint">Pop the bubbles. A stink bug costs a life.</p>
         </div>
         <p class="loader-title">Advent begins in</p>
         <p class="loader-count" id="loader-count"></p>
@@ -246,7 +251,7 @@
     <noscript>
       <p class="noscript">This calendar needs JavaScript so the doors know what time it is.</p>
     </noscript>
-    <script src="js/recipes.js?v=bug"></script>
-    <script src="js/calendar.js?v=bug"></script>
+    <script src="js/recipes.js?v=lives"></script>
+    <script src="js/calendar.js?v=lives"></script>
   </body>
 </html>

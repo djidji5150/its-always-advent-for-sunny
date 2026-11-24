@@ -633,8 +633,63 @@
       }, 280);
     }
 
+    var livesEl = document.getElementById("catch-lives");
+    var overEl = document.getElementById("catch-over");
+    var againEl = document.getElementById("catch-again");
+    var lives = 9;
+    var hurtUntil = 0;
+    var over = false;
     var bugs = [];
     var bugIn = 1600;
+    showLives();
+
+    function showLives() {
+      if (!livesEl) return;
+      var marks = livesEl.querySelectorAll("i");
+      for (var i = 0; i < marks.length; i++) marks[i].classList.toggle("is-lost", i >= lives);
+      var left = Math.max(0, lives);
+      livesEl.setAttribute("aria-label", left + (left === 1 ? " life left" : " lives left"));
+    }
+
+    function clearActors() {
+      balls.forEach(function (ball) {
+        if (ball.el) ball.el.remove();
+        ball.el = null;
+      });
+      bugs.forEach(function (bug) {
+        if (bug.el) bug.el.remove();
+        bug.el = null;
+      });
+      balls = [];
+      bugs = [];
+      field.querySelectorAll(".bauble-bit, .stink-bit").forEach(function (bit) { bit.remove(); });
+    }
+
+    function gameOver() {
+      over = true;
+      running = false;
+      clearActors();
+      if (overEl) overEl.hidden = false;
+    }
+
+    function replay() {
+      over = false;
+      running = true;
+      lives = 9;
+      score = 0;
+      hurtUntil = 0;
+      spawnIn = 500;
+      bugIn = 1600;
+      last = 0;
+      showLives();
+      showScore();
+      cat.classList.remove("is-reek");
+      cat.classList.remove("is-swat");
+      if (overEl) overEl.hidden = true;
+      window.requestAnimationFrame(frame);
+    }
+
+    if (againEl) againEl.addEventListener("click", replay);
 
     function pace() {
       return {
@@ -698,25 +753,31 @@
     }
 
     function sting(bug) {
-      if (!bug.el || bug.gone) return;
+      if (!bug.el || bug.gone || over) return;
       bug.gone = true;
-      miss();
       var bugRect = bug.el.getBoundingClientRect();
       var catRect = cat.getBoundingClientRect();
       var center = catRect.left + catRect.width / 2;
       var dir = (bugRect.left + bugRect.width / 2) < center ? 1 : -1;
       slideCat(center + dir * 130);
-      cat.classList.remove("is-reek");
-      void cat.offsetWidth;
-      cat.classList.add("is-reek");
       var el = bug.el;
       el.classList.add("is-stink");
       el.disabled = true;
       puff(el);
+      var now = performance.now();
+      if (now >= hurtUntil) {
+        hurtUntil = now + 700;
+        lives -= 1;
+        showLives();
+        cat.classList.remove("is-reek");
+        void cat.offsetWidth;
+        cat.classList.add("is-reek");
+        if (lives <= 0) gameOver();
+      }
       window.setTimeout(function () {
         if (el.parentNode) el.remove();
         bug.el = null;
-        cat.classList.remove("is-reek");
+        if (!over) cat.classList.remove("is-reek");
       }, 340);
     }
 
@@ -774,12 +835,13 @@
     }
 
     field.addEventListener("pointerdown", function (event) {
-      if (event.target.closest && (event.target.closest(".bauble") || event.target.closest(".stinkbug"))) return;
+      if (over) return;
+      if (event.target.closest && (event.target.closest(".bauble") || event.target.closest(".stinkbug") || event.target.closest(".catch-over"))) return;
       slideCat(event.clientX);
     });
 
     function frame(now) {
-      if (!running || loader.hidden) return;
+      if (!running || over || loader.hidden) return;
       var dt = last ? Math.min(0.034, (now - last) / 1000) : 0;
       last = now;
       var step = pace();
@@ -837,7 +899,7 @@
       });
       balls = balls.filter(function (ball) { return ball.el; });
       bugs = bugs.filter(function (bug) { return bug.el; });
-      window.requestAnimationFrame(frame);
+      if (running && !over && !loader.hidden) window.requestAnimationFrame(frame);
     }
 
     window.requestAnimationFrame(frame);
