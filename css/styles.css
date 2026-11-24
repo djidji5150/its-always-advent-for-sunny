@@ -39,6 +39,114 @@ body.is-magic {
     #140c12;
 }
 
+html.is-loading { overflow: hidden; }
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 28px 18px;
+  overflow: auto;
+  text-align: center;
+  color: #f7f1e6;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(176, 42, 48, 0.38), transparent 34%),
+    radial-gradient(circle at 50% 100%, rgba(240, 211, 148, 0.14), transparent 42%),
+    #12241c;
+}
+
+.loader.is-done {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+
+.loader[hidden],
+html.advent-open .loader { display: none !important; }
+
+.loader-card { width: min(36rem, 100%); }
+
+.loader-kicker {
+  margin: 0;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #f3d7a1;
+}
+
+.loader-cat { margin: 0.2rem auto 0.15rem; }
+
+.loader-cat svg {
+  width: min(320px, 88vw);
+  height: auto;
+  overflow: visible;
+  animation: loader-bob 1.8s ease-in-out infinite;
+}
+
+.santa-pom {
+  transform-box: fill-box;
+  transform-origin: 15% 80%;
+  animation: pom-swing 1.15s ease-in-out infinite;
+}
+
+.loader-title {
+  margin: 0.15rem 0 0;
+  font-family: Fraunces, Palatino, serif;
+  font-weight: 560;
+  font-size: clamp(2rem, 6vw, 3.1rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.loader-count {
+  width: min(20rem, 100%);
+  margin: 0.55rem auto 0;
+  max-width: 100%;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.05rem, 3.4vw, 1.45rem);
+  line-height: 1.35;
+  color: #fffaf2;
+  white-space: normal;
+}
+
+.loader-when {
+  margin: 0.35rem 0 0;
+  color: rgba(247, 241, 230, 0.78);
+}
+
+.loader-enter {
+  appearance: none;
+  margin-top: 1.15rem;
+  padding: 0.7rem 1.35rem;
+  border: 1px solid rgba(240, 211, 148, 0.72);
+  border-radius: 999px;
+  background: #143528;
+  color: #f3d7a1;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.loader-enter:hover,
+.loader-enter:focus-visible { color: #fffaf2; background: #1c4a36; }
+
+.loader-enter:focus-visible {
+  outline: 3px solid #f0d394;
+  outline-offset: 3px;
+}
+
+@keyframes loader-bob {
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes pom-swing {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(16deg); }
+}
+
 .snow,
 .snow::before,
 .snow::after {

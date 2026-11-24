@@ -532,11 +532,72 @@
 
   window.addEventListener("scroll", onWaitingScroll, { passive: true });
 
+  var loader = document.getElementById("loader");
+  var loaderCount = document.getElementById("loader-count");
+  var loaderWhen = document.getElementById("loader-when");
+  var loaderEnter = document.getElementById("loader-enter");
+  var loaderGone = !loader || document.documentElement.classList.contains("advent-open");
+  var loaderHeld = [
+    document.querySelector(".wrap"),
+    document.getElementById("toast"),
+    document.getElementById("waiting"),
+    document.getElementById("recipe"),
+  ];
+
+  function releaseLoader() {
+    loaderHeld.forEach(function (el) {
+      if (el) el.inert = false;
+    });
+  }
+
+  function endLoader() {
+    if (loaderGone) return;
+    loaderGone = true;
+    document.documentElement.classList.remove("is-loading");
+    releaseLoader();
+    if (!loader) return;
+    loader.classList.add("is-done");
+    window.setTimeout(function () {
+      loader.hidden = true;
+    }, 460);
+  }
+
+  function paintLoader(now) {
+    if (loaderGone) return;
+    var firstUnlock = zonedDateTime(dates[0], UNLOCK_HOUR);
+    if (now.getTime() >= firstUnlock.getTime()) {
+      endLoader();
+      return;
+    }
+    if (loaderWhen) loaderWhen.textContent = formatWhen(dates[0]) + " at 8:00";
+    if (loaderCount) loaderCount.textContent = formatDistance(firstUnlock.getTime() - now.getTime());
+  }
+
+  if (loaderGone) {
+    if (loader) loader.hidden = true;
+    document.documentElement.classList.remove("is-loading");
+  } else {
+    loaderHeld.forEach(function (el) {
+      if (el) el.inert = true;
+    });
+    if (loaderEnter) {
+      loaderEnter.addEventListener("click", function (event) {
+        event.stopPropagation();
+        endLoader();
+      });
+    }
+    loader.addEventListener("click", endLoader);
+    window.setTimeout(endLoader, 6800);
+  }
+
   buildDoors();
   paint();
   syncWaiting(getNow());
+  paintLoader(getNow());
   window.setInterval(function () {
+    var now = getNow();
     paint();
-    syncWaiting(getNow());
+    syncWaiting(now);
+    paintLoader(now);
   }, 1000);
 })();
