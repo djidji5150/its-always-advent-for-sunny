@@ -23,7 +23,7 @@
       href="https://fonts.googleapis.com/css2?family=Caveat:wght@560;650&family=Fraunces:ital,opsz,wght@0,9..144,520;0,9..144,650;1,9..144,560&family=Outfit:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/styles.css?v=enter" />
+    <link rel="stylesheet" href="css/styles.css?v=game" />
     <script>
       (function () {
         var params = new URLSearchParams(location.search);
@@ -51,48 +51,48 @@
     <div class="loader" id="loader">
       <div class="loader-card">
         <p class="loader-kicker">For Sunčica</p>
-        <div class="loader-cat" aria-hidden="true">
-          <svg viewBox="0 -16 168 108">
-            <ellipse cx="78" cy="82" rx="50" ry="4" fill="rgba(255,250,242,0.16)"/>
-            <g class="twine">
-              <circle cx="132" cy="58" r="14" fill="#f1d7a6"/>
-              <circle cx="132" cy="58" r="14" fill="none" stroke="#c9964e" stroke-width="1.4"/>
-              <path d="M120 54c5 1 7 7 3 10M144 53c-6 2-7 9-2 12M123 63c7-1 13 0 17 5M126 50c7 3 9 9 5 13" fill="none" stroke="#b8843c" stroke-width="1.2" stroke-linecap="round"/>
-              <path d="M119 62c-9 1-14 7-12 13" fill="none" stroke="#c9964e" stroke-width="1.35" stroke-linecap="round"/>
-            </g>
-            <g class="kitten">
-              <path class="kitten-tail" d="M36 60c-14-1-22-16-12-26" fill="none" stroke="#e87830" stroke-width="6.5" stroke-linecap="round"/>
-              <path d="M24 34c3-7 10-8 12-3" fill="none" stroke="#f6c09a" stroke-width="4" stroke-linecap="round"/>
-              <ellipse cx="48" cy="64" rx="12" ry="8.5" fill="#e87830"/>
-              <ellipse cx="66" cy="58" rx="29" ry="16" fill="#f29445"/>
-              <ellipse cx="70" cy="62" rx="16" ry="9" fill="#f8d2b0"/>
-              <path d="M48 50c2 4 2 8 0 11M56 46c2 5 2 9 0 13" fill="none" stroke="#d86a24" stroke-width="1.5" stroke-linecap="round"/>
-              <circle cx="94" cy="46" r="17" fill="#f39b4e"/>
-              <path d="M81 36l5-16 8 14z" fill="#f39b4e"/>
-              <path d="M98 34l7-16 8 16z" fill="#f39b4e"/>
-              <path d="M84 34l2.2-8 4.2 8z" fill="#f3b0c0"/>
-              <path d="M101 32l3.4-8 5 9z" fill="#f3b0c0"/>
-              <path d="M88 34c1 4 1 7 0 10M94 32c1 5 1 8 0 12" fill="none" stroke="#d86a24" stroke-width="1.35" stroke-linecap="round"/>
-              <ellipse cx="102" cy="50" rx="8" ry="6" fill="#f8d7be"/>
-              <ellipse cx="100" cy="44" rx="2.4" ry="3.1" fill="#2a1a12"/>
-              <circle cx="100.8" cy="43" r="0.75" fill="#fff"/>
-              <path d="M106 49.2l2.5 1.8-2.5 1.6z" fill="#e47888"/>
-              <path d="M108.4 52c1.3 1.3 2.8 1.3 4 0" fill="none" stroke="#c96a78" stroke-width="0.75" stroke-linecap="round"/>
-              <path d="M108 51h10M107 54h9M90 50H81" fill="none" stroke="#fff6ec" stroke-width="0.75" stroke-linecap="round"/>
-              <ellipse cx="96" cy="46" rx="3.2" ry="1.8" fill="#f0a090" opacity="0.55"/>
-              <ellipse cx="82" cy="70" rx="7" ry="4" fill="#e87830"/>
-              <g class="kitten-paw">
-                <ellipse cx="112" cy="60" rx="9" ry="5.2" fill="#f39b4e"/>
-                <ellipse cx="118" cy="62" rx="3.3" ry="2.2" fill="#f8d2b0"/>
-              </g>
-            </g>
-            <g class="santa-hat">
-              <path fill="#c62828" d="M76 30c8-26 40-32 58-12 2 4 2 9-1 13-14-10-32-6-40 10-6 1-13-2-17-11z"/>
-              <ellipse cx="100" cy="32" rx="24" ry="7.5" fill="#fffaf2"/>
-              <ellipse cx="100" cy="30" rx="17" ry="3.2" fill="#f0e2d0"/>
-              <circle class="santa-pom" cx="136" cy="14" r="7.5" fill="#fffaf2"/>
-            </g>
-          </svg>
+        <div class="catch" id="catch">
+          <p class="catch-score">Streak <strong id="catch-now">0</strong> · Best <strong id="catch-best">0</strong></p>
+          <div class="catch-field" id="catch-field">
+            <div class="catch-cat" id="catch-cat" aria-hidden="true">
+              <svg viewBox="0 -16 168 108">
+                <ellipse cx="78" cy="82" rx="50" ry="4" fill="rgba(255,250,242,0.16)"/>
+                <g class="kitten">
+                  <path class="kitten-tail" d="M36 60c-14-1-22-16-12-26" fill="none" stroke="#e87830" stroke-width="6.5" stroke-linecap="round"/>
+                  <path d="M24 34c3-7 10-8 12-3" fill="none" stroke="#f6c09a" stroke-width="4" stroke-linecap="round"/>
+                  <ellipse cx="48" cy="64" rx="12" ry="8.5" fill="#e87830"/>
+                  <ellipse cx="66" cy="58" rx="29" ry="16" fill="#f29445"/>
+                  <ellipse cx="70" cy="62" rx="16" ry="9" fill="#f8d2b0"/>
+                  <path d="M48 50c2 4 2 8 0 11M56 46c2 5 2 9 0 13" fill="none" stroke="#d86a24" stroke-width="1.5" stroke-linecap="round"/>
+                  <circle cx="94" cy="46" r="17" fill="#f39b4e"/>
+                  <path d="M81 36l5-16 8 14z" fill="#f39b4e"/>
+                  <path d="M98 34l7-16 8 16z" fill="#f39b4e"/>
+                  <path d="M84 34l2.2-8 4.2 8z" fill="#f3b0c0"/>
+                  <path d="M101 32l3.4-8 5 9z" fill="#f3b0c0"/>
+                  <path d="M88 34c1 4 1 7 0 10M94 32c1 5 1 8 0 12" fill="none" stroke="#d86a24" stroke-width="1.35" stroke-linecap="round"/>
+                  <ellipse cx="102" cy="50" rx="8" ry="6" fill="#f8d7be"/>
+                  <ellipse cx="100" cy="44" rx="2.4" ry="3.1" fill="#2a1a12"/>
+                  <circle cx="100.8" cy="43" r="0.75" fill="#fff"/>
+                  <path d="M106 49.2l2.5 1.8-2.5 1.6z" fill="#e47888"/>
+                  <path d="M108.4 52c1.3 1.3 2.8 1.3 4 0" fill="none" stroke="#c96a78" stroke-width="0.75" stroke-linecap="round"/>
+                  <path d="M108 51h10M107 54h9M90 50H81" fill="none" stroke="#fff6ec" stroke-width="0.75" stroke-linecap="round"/>
+                  <ellipse cx="96" cy="46" rx="3.2" ry="1.8" fill="#f0a090" opacity="0.55"/>
+                  <ellipse cx="82" cy="70" rx="7" ry="4" fill="#e87830"/>
+                  <g class="kitten-paw">
+                    <ellipse cx="112" cy="60" rx="9" ry="5.2" fill="#f39b4e"/>
+                    <ellipse cx="118" cy="62" rx="3.3" ry="2.2" fill="#f8d2b0"/>
+                  </g>
+                </g>
+                <g class="santa-hat">
+                  <path fill="#c62828" d="M76 30c8-26 40-32 58-12 2 4 2 9-1 13-14-10-32-6-40 10-6 1-13-2-17-11z"/>
+                  <ellipse cx="100" cy="32" rx="24" ry="7.5" fill="#fffaf2"/>
+                  <ellipse cx="100" cy="30" rx="17" ry="3.2" fill="#f0e2d0"/>
+                  <circle class="santa-pom" cx="136" cy="14" r="7.5" fill="#fffaf2"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+          <p class="catch-hint">Tap the baubles before they land.</p>
         </div>
         <p class="loader-title">Advent begins in</p>
         <p class="loader-count" id="loader-count"></p>
@@ -246,7 +246,7 @@
     <noscript>
       <p class="noscript">This calendar needs JavaScript so the doors know what time it is.</p>
     </noscript>
-    <script src="js/recipes.js?v=enter"></script>
-    <script src="js/calendar.js?v=enter"></script>
+    <script src="js/recipes.js?v=game"></script>
+    <script src="js/calendar.js?v=game"></script>
   </body>
 </html>

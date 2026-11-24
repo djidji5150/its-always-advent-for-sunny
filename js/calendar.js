@@ -555,7 +555,104 @@
     if (loaderCount) loaderCount.textContent = formatDistance(firstUnlock.getTime() - now.getTime());
   }
 
-  if (!loaderGone) window.setTimeout(endLoader, 6800);
+  if (!loaderGone) startCatch();
+
+  function startCatch() {
+    var field = document.getElementById("catch-field");
+    var cat = document.getElementById("catch-cat");
+    var scoreEl = document.getElementById("catch-now");
+    var bestEl = document.getElementById("catch-best");
+    if (!field || !cat || !loader) return;
+    var score = 0;
+    var best = 0;
+    try { best = Number(sessionStorage.getItem("sunny-catch-best")) || 0; } catch (err) {}
+    if (bestEl) bestEl.textContent = String(best);
+    var balls = [];
+    var last = 0;
+    var spawnIn = 500;
+    var running = true;
+
+    function showScore() {
+      if (scoreEl) scoreEl.textContent = String(score);
+      if (bestEl) bestEl.textContent = String(best);
+    }
+
+    function slideCat(clientX) {
+      var rect = field.getBoundingClientRect();
+      var local = clientX - rect.left;
+      var half = cat.offsetWidth / 2;
+      var next = Math.max(half, Math.min(rect.width - half, local));
+      cat.style.left = next + "px";
+    }
+
+    function miss() {
+      score = 0;
+      showScore();
+    }
+
+    function caught(ball, clientX) {
+      if (!ball.el) return;
+      score += 1;
+      if (score > best) {
+        best = score;
+        try { sessionStorage.setItem("sunny-catch-best", String(best)); } catch (err) {}
+      }
+      showScore();
+      slideCat(clientX);
+      cat.classList.remove("is-swat");
+      void cat.offsetWidth;
+      cat.classList.add("is-swat");
+      ball.el.remove();
+      ball.el = null;
+    }
+
+    function spawn() {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bauble" + (Math.random() > 0.45 ? " bauble--gold" : "");
+      btn.setAttribute("aria-label", "Catch bauble");
+      var room = Math.max(20, field.clientWidth - 52);
+      var x = 8 + Math.random() * room;
+      btn.style.left = x + "px";
+      btn.style.top = "-48px";
+      var ball = { el: btn, y: -48, vy: Math.min(210, 90 + score * 8) };
+      btn.addEventListener("pointerdown", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        caught(ball, event.clientX);
+      });
+      field.appendChild(btn);
+      balls.push(ball);
+    }
+
+    function frame(now) {
+      if (!running || loader.hidden) return;
+      var dt = last ? Math.min(0.034, (now - last) / 1000) : 0;
+      last = now;
+      spawnIn -= dt * 1000;
+      var alive = 0;
+      balls.forEach(function (ball) { if (ball.el) alive += 1; });
+      if (spawnIn <= 0 && alive < 3) {
+        spawn();
+        spawnIn = Math.max(480, 980 - score * 35);
+      }
+      var floor = field.clientHeight - 36;
+      balls.forEach(function (ball) {
+        if (!ball.el) return;
+        ball.y += ball.vy * dt;
+        ball.el.style.top = ball.y + "px";
+        if (ball.y >= floor) {
+          ball.el.remove();
+          ball.el = null;
+          miss();
+        }
+      });
+      balls = balls.filter(function (ball) { return ball.el; });
+      window.requestAnimationFrame(frame);
+    }
+
+    window.requestAnimationFrame(frame);
+  }
 
   buildDoors();
   paint();

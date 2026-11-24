@@ -77,6 +77,82 @@ html.advent-open .loader { display: none !important; }
   color: #f3d7a1;
 }
 
+.catch { margin-top: 0.35rem; }
+
+.catch-score {
+  margin: 0;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+  color: #f3d7a1;
+}
+
+.catch-score strong {
+  font-variant-numeric: tabular-nums;
+  color: #fffaf2;
+}
+
+.catch-field {
+  position: relative;
+  height: 176px;
+  margin: 0.35rem auto 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 115%, rgba(240, 211, 148, 0.16), transparent 46%),
+    rgba(255, 250, 242, 0.04);
+  touch-action: manipulation;
+}
+
+.catch-cat {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  z-index: 1;
+  width: 150px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: left 0.16s ease-out;
+}
+
+.catch-cat svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.catch-cat .kitten-paw { animation: none; }
+
+.catch-cat.is-swat .kitten-paw { animation: kitten-swat 0.32s ease-out 1; }
+
+.bauble {
+  position: absolute;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 32% 28%, #fff 0 3px, transparent 4px),
+    radial-gradient(circle at 40% 38%, #f6c9c9, #c62828 68%);
+  box-shadow: inset 0 -4px 0 rgba(90, 20, 20, 0.18), 0 6px 10px rgba(0, 0, 0, 0.22);
+}
+
+.bauble--gold {
+  background:
+    radial-gradient(circle at 32% 28%, #fff 0 3px, transparent 4px),
+    radial-gradient(circle at 40% 38%, #fff4d2, #e0b15a 64%, #a8752d);
+}
+
+.bauble:focus-visible {
+  outline: 3px solid #f0d394;
+  outline-offset: 2px;
+}
+
+.catch-hint {
+  margin: 0.4rem 0 0.15rem;
+  font-size: 0.9rem;
+  color: rgba(247, 241, 230, 0.72);
+}
+
 .loader-cat { margin: 0.2rem auto 0.15rem; }
 
 .loader-cat svg {
