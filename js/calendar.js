@@ -590,20 +590,58 @@
       showScore();
     }
 
-    function caught(ball, clientX) {
-      if (!ball.el) return;
+    function burst(el) {
+      var fieldRect = field.getBoundingClientRect();
+      var rect = el.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2 - fieldRect.left;
+      var cy = rect.top + rect.height / 2 - fieldRect.top;
+      var gold = el.classList.contains("bauble--gold");
+      for (var i = 0; i < 7; i++) {
+        var bit = document.createElement("span");
+        bit.className = "bauble-bit" + (gold ? " bauble-bit--gold" : "");
+        bit.setAttribute("aria-hidden", "true");
+        bit.style.left = cx + "px";
+        bit.style.top = cy + "px";
+        var angle = (Math.PI * 2 * i) / 7 + Math.random() * 0.4;
+        var dist = 28 + Math.random() * 22;
+        bit.style.setProperty("--dx", (Math.cos(angle) * dist) + "px");
+        bit.style.setProperty("--dy", (Math.sin(angle) * dist) + "px");
+        field.appendChild(bit);
+        window.setTimeout(function (node) { node.remove(); }, 360, bit);
+      }
+    }
+
+    function pop(ball) {
+      if (!ball.el || ball.popping) return;
+      ball.popping = true;
       score += 1;
       if (score > best) {
         best = score;
         try { sessionStorage.setItem("sunny-catch-best", String(best)); } catch (err) {}
       }
       showScore();
-      slideCat(clientX);
       cat.classList.remove("is-swat");
       void cat.offsetWidth;
       cat.classList.add("is-swat");
-      ball.el.remove();
-      ball.el = null;
+      var el = ball.el;
+      el.classList.add("is-pop");
+      el.disabled = true;
+      burst(el);
+      window.setTimeout(function () {
+        if (el.parentNode) el.remove();
+        ball.el = null;
+      }, 280);
+    }
+
+    function pawHits(ball) {
+      if (!ball.el) return false;
+      var catRect = cat.getBoundingClientRect();
+      var ballRect = ball.el.getBoundingClientRect();
+      var bx = ballRect.left + ballRect.width / 2;
+      var by = ballRect.top + ballRect.height / 2;
+      var pad = 8;
+      return bx >= catRect.left - pad && bx <= catRect.right + pad
+        && by >= catRect.top + 8 && by <= catRect.bottom - 10;
     }
 
     function spawn() {
@@ -611,19 +649,24 @@
       btn.type = "button";
       btn.className = "bauble" + (Math.random() > 0.45 ? " bauble--gold" : "");
       btn.setAttribute("aria-label", "Catch bauble");
-      var room = Math.max(20, field.clientWidth - 52);
+      var room = Math.max(20, field.clientWidth - 64);
       var x = 8 + Math.random() * room;
       btn.style.left = x + "px";
-      btn.style.top = "-48px";
-      var ball = { el: btn, y: -48, vy: Math.min(210, 90 + score * 8) };
+      btn.style.top = "-56px";
+      var ball = { el: btn, y: -56, vy: Math.min(240, 110 + score * 8) };
       btn.addEventListener("pointerdown", function (event) {
         event.preventDefault();
         event.stopPropagation();
-        caught(ball, event.clientX);
+        slideCat(event.clientX);
       });
       field.appendChild(btn);
       balls.push(ball);
     }
+
+    field.addEventListener("pointerdown", function (event) {
+      if (event.target.closest && event.target.closest(".bauble")) return;
+      slideCat(event.clientX);
+    });
 
     function frame(now) {
       if (!running || loader.hidden) return;
@@ -632,15 +675,19 @@
       spawnIn -= dt * 1000;
       var alive = 0;
       balls.forEach(function (ball) { if (ball.el) alive += 1; });
-      if (spawnIn <= 0 && alive < 3) {
+      if (spawnIn <= 0 && alive < 4) {
         spawn();
-        spawnIn = Math.max(480, 980 - score * 35);
+        spawnIn = Math.max(420, 860 - score * 30);
       }
-      var floor = field.clientHeight - 36;
+      var floor = field.clientHeight - 28;
       balls.forEach(function (ball) {
-        if (!ball.el) return;
+        if (!ball.el || ball.popping) return;
         ball.y += ball.vy * dt;
         ball.el.style.top = ball.y + "px";
+        if (pawHits(ball)) {
+          pop(ball);
+          return;
+        }
         if (ball.y >= floor) {
           ball.el.remove();
           ball.el = null;
