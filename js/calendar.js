@@ -1,6 +1,130 @@
 (function () {
   "use strict";
 
+  var SESSION_KEY = "sunny-session";
+  var CATCH_LEGACY_KEY = "sunny-catch";
+  var CATCH_CLAIMED_KEY = "sunny-catch-claimed";
+  var PASSWORD_SHA256 = {
+    bighardsun: "5f0f6a885b38d2d370df9daccca0d719630882368143217858f1bec9a1a7378b",
+    admin: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+  };
+
+  function currentUser() {
+    try {
+      var name = localStorage.getItem(SESSION_KEY);
+      if (name && Object.prototype.hasOwnProperty.call(PASSWORD_SHA256, name)) return name;
+    } catch (err) {}
+    return "";
+  }
+
+  function catchStorageKey(username) {
+    return "sunny-catch:" + username;
+  }
+
+  function sha256Hex(text) {
+    var data = new TextEncoder().encode(text);
+    return crypto.subtle.digest("SHA-256", data).then(function (buf) {
+      return Array.from(new Uint8Array(buf)).map(function (byte) {
+        return byte.toString(16).padStart(2, "0");
+      }).join("");
+    });
+  }
+
+  function claimLegacyScore(username) {
+    try {
+      if (localStorage.getItem(CATCH_CLAIMED_KEY)) return;
+      var legacy = localStorage.getItem(CATCH_LEGACY_KEY);
+      if (!legacy) return;
+      localStorage.setItem(CATCH_CLAIMED_KEY, "1");
+      if (!localStorage.getItem(catchStorageKey(username))) {
+        localStorage.setItem(catchStorageKey(username), legacy);
+      }
+    } catch (err) {}
+  }
+
+  function showGateError(message) {
+    var error = document.getElementById("gate-error");
+    if (!error) return;
+    if (!message) {
+      error.hidden = true;
+      error.textContent = "";
+      return;
+    }
+    error.textContent = message;
+    error.hidden = false;
+  }
+
+  function shieldSite(locked) {
+    var nodes = document.body ? document.body.children : [];
+    for (var i = 0; i < nodes.length; i++) {
+      if (nodes[i].id === "gate") continue;
+      if (locked) nodes[i].setAttribute("inert", "");
+      else nodes[i].removeAttribute("inert");
+    }
+  }
+
+  var gateForm = document.getElementById("gate-form");
+  var gateUser = document.getElementById("gate-user");
+  var gatePass = document.getElementById("gate-pass");
+  var gateSubmit = document.getElementById("gate-submit");
+  var signOut = document.getElementById("sign-out");
+  var signingIn = false;
+
+  if (gateForm) {
+    gateForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (signingIn) return;
+      var username = gateUser ? gateUser.value.trim() : "";
+      var password = gatePass ? gatePass.value : "";
+      if (gatePass) gatePass.value = "";
+      showGateError("");
+      var expected = Object.prototype.hasOwnProperty.call(PASSWORD_SHA256, username)
+        ? PASSWORD_SHA256[username]
+        : "";
+      if (!window.crypto || !crypto.subtle || typeof TextEncoder !== "function") {
+        showGateError("Sign-in could not be checked. Try again.");
+        return;
+      }
+      signingIn = true;
+      if (gateSubmit) gateSubmit.disabled = true;
+      var accepted = false;
+      sha256Hex(password).then(function (hash) {
+        password = "";
+        if (!expected || hash !== expected) {
+          showGateError("That name and password do not match.");
+          if (gatePass) gatePass.focus();
+          return;
+        }
+        try {
+          localStorage.setItem(SESSION_KEY, username);
+          claimLegacyScore(username);
+        } catch (err) {
+          showGateError("Sign-in could not be saved in this browser.");
+          return;
+        }
+        accepted = true;
+        location.reload();
+      }).catch(function () {
+        password = "";
+        showGateError("Sign-in could not be checked. Try again.");
+      }).then(function () {
+        if (accepted) return;
+        signingIn = false;
+        if (gateSubmit) gateSubmit.disabled = false;
+      });
+    });
+  }
+
+  if (signOut) {
+    signOut.addEventListener("click", function () {
+      try { localStorage.removeItem(SESSION_KEY); } catch (err) {}
+      location.reload();
+    });
+  }
+
+  shieldSite(!currentUser());
+  if (!currentUser() && gateUser) gateUser.focus();
+
   var TZ = "Europe/Sarajevo";
   var YEAR = 2026;
   var FIRST_DAY = 6;
@@ -511,6 +635,11 @@
   }
 
   function syncWaiting(now) {
+    if (!currentUser()) {
+      if (waitTab) waitTab.hidden = true;
+      if (waiting && waiting.open) waiting.close();
+      return;
+    }
     var still = stillWaitingFor(now);
     if (waitTab) waitTab.hidden = !still;
     if (!waiting) return;
@@ -518,6 +647,7 @@
   }
 
   function onWaitingScroll() {
+    if (!currentUser()) return;
     if (!waiting || waitingDismissed || waitingReached) return;
     if (typeof waiting.showModal !== "function") return;
     if (!stillWaitingFor(getNow())) return;
@@ -555,9 +685,11 @@
     if (loaderCount) loaderCount.textContent = formatDistance(firstUnlock.getTime() - now.getTime());
   }
 
-  if (!loaderGone) startCatch();
+  var player = currentUser();
+  if (player) claimLegacyScore(player);
+  if (player && !loaderGone) startCatch(player);
 
-  function startCatch() {
+  function startCatch(player) {
     var field = document.getElementById("catch-field");
     var cat = document.getElementById("catch-cat");
     var scoreEl = document.getElementById("catch-now");
@@ -567,7 +699,7 @@
     function loadSave() {
       var blank = { best: 0, score: 0, lives: 9 };
       try {
-        var raw = localStorage.getItem("sunny-catch");
+        var raw = localStorage.getItem(catchStorageKey(player));
         if (raw) {
           var data = JSON.parse(raw);
           var savedBest = Math.max(0, Number(data.best) || 0);
@@ -577,10 +709,6 @@
           if (savedScore > savedBest) savedBest = savedScore;
           return { best: savedBest, score: savedScore, lives: savedLives };
         }
-      } catch (err) {}
-      try {
-        var legacy = Number(sessionStorage.getItem("sunny-catch-best")) || 0;
-        if (legacy > 0) return { best: legacy, score: 0, lives: 9 };
       } catch (err) {}
       return blank;
     }
@@ -595,7 +723,7 @@
 
     function remember() {
       try {
-        localStorage.setItem("sunny-catch", JSON.stringify({
+        localStorage.setItem(catchStorageKey(player), JSON.stringify({
           best: best,
           score: score,
           lives: Math.max(0, Math.min(9, lives))

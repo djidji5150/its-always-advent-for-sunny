@@ -39,7 +39,119 @@ body.is-magic {
     #140c12;
 }
 
-html.is-loading { overflow: hidden; }
+html.is-loading,
+html.is-locked { overflow: hidden; }
+
+.gate {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  place-items: center;
+  padding: 28px 18px;
+  overflow: auto;
+  color: #f7f1e6;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(176, 42, 48, 0.38), transparent 34%),
+    radial-gradient(circle at 50% 100%, rgba(240, 211, 148, 0.14), transparent 42%),
+    #12241c;
+}
+
+html.is-locked .gate { display: grid; }
+
+.gate-card {
+  width: min(26rem, 100%);
+  margin: 0;
+  text-align: center;
+}
+
+.gate-title {
+  margin: 0.45rem 0 0;
+  color: #fffaf2;
+  font-family: Fraunces, Palatino, "Palatino Linotype", serif;
+  font-weight: 560;
+  font-size: clamp(2.5rem, 7vw, 3.8rem);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+.gate-lede {
+  margin: 0.85rem 0 1.15rem;
+  color: rgba(247, 241, 230, 0.82);
+  line-height: 1.5;
+}
+
+.gate-fields {
+  display: grid;
+  gap: 0.4rem;
+  width: 100%;
+  text-align: left;
+}
+
+.gate-label {
+  margin-top: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f3d7a1;
+}
+
+.gate-fields input {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(240, 211, 148, 0.45);
+  border-radius: 14px;
+  background: rgba(20, 53, 40, 0.72);
+  color: #fffaf2;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.gate-fields input:focus-visible {
+  outline: 3px solid #f0d394;
+  outline-offset: 2px;
+}
+
+.gate-error {
+  min-height: 1.35em;
+  margin: 0.7rem 0 0;
+  color: #f0b4a8;
+  font-size: 0.95rem;
+}
+
+.gate-error[hidden] { display: none; }
+
+.gate-card .loader-enter { margin-top: 0.85rem; }
+
+.sign-out {
+  display: none;
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 1100;
+  appearance: none;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(240, 211, 148, 0.55);
+  border-radius: 999px;
+  background: rgba(20, 53, 40, 0.88);
+  color: #f3d7a1;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+html.is-signed-in .sign-out { display: inline-flex; }
+
+.sign-out:hover,
+.sign-out:focus-visible { color: #fffaf2; background: #1c4a36; }
+
+.sign-out:focus-visible {
+  outline: 3px solid #f0d394;
+  outline-offset: 3px;
+}
 
 .loader {
   position: fixed;

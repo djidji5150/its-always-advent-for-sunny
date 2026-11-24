@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="is-loading">
+<html lang="en" class="is-loading is-locked">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,9 +23,22 @@
       href="https://fonts.googleapis.com/css2?family=Caveat:wght@560;650&family=Fraunces:ital,opsz,wght@0,9..144,520;0,9..144,650;1,9..144,560&family=Outfit:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/styles.css?v=keep" />
+    <style>
+      .gate, .sign-out { display: none; }
+      html.is-locked .gate { display: block; }
+      html.is-signed-in .sign-out { display: inline-block; }
+      html.is-locked { overflow: hidden; }
+    </style>
+    <link rel="stylesheet" href="css/styles.css?v=gate" />
     <script>
       (function () {
+        try {
+          var who = localStorage.getItem("sunny-session");
+          if (who === "bighardsun" || who === "admin") {
+            document.documentElement.classList.remove("is-locked");
+            document.documentElement.classList.add("is-signed-in");
+          }
+        } catch (err) {}
         var params = new URLSearchParams(location.search);
         var preview = params.get("preview");
         var dated = /^\d{4}-\d{2}-\d{2}$/.test(preview || "");
@@ -48,6 +61,22 @@
     </script>
   </head>
   <body>
+    <div class="gate" id="gate">
+      <form class="gate-card" id="gate-form" method="post" action="#" autocomplete="on">
+        <p class="loader-kicker">For Sunčica</p>
+        <h2 class="gate-title">The door is latched</h2>
+        <p class="gate-lede">Sign in, and the calendar will open.</p>
+        <div class="gate-fields">
+          <label class="gate-label" for="gate-user">Name</label>
+          <input id="gate-user" name="username" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required />
+          <label class="gate-label" for="gate-pass">Password</label>
+          <input id="gate-pass" name="password" type="password" autocomplete="current-password" required />
+        </div>
+        <p class="gate-error" id="gate-error" role="alert" hidden></p>
+        <button type="submit" class="loader-enter" id="gate-submit">Sign in</button>
+      </form>
+    </div>
+    <button type="button" class="sign-out" id="sign-out">Sign out</button>
     <div class="loader" id="loader">
       <div class="loader-card">
         <p class="loader-kicker">For Sunčica</p>
@@ -251,7 +280,7 @@
     <noscript>
       <p class="noscript">This calendar needs JavaScript so the doors know what time it is.</p>
     </noscript>
-    <script src="js/recipes.js?v=keep"></script>
-    <script src="js/calendar.js?v=keep"></script>
+    <script src="js/recipes.js?v=gate"></script>
+    <script src="js/calendar.js?v=gate"></script>
   </body>
 </html>
