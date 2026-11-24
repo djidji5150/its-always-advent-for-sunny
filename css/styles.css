@@ -109,7 +109,7 @@ html.advent-open .loader { display: none !important; }
   left: 50%;
   bottom: -8px;
   z-index: 1;
-  width: min(210px, 48vw);
+  width: min(180px, 42vw);
   transform: translateX(-50%);
   pointer-events: none;
   transition: left 0.22s ease-out;
@@ -120,6 +120,49 @@ html.advent-open .loader { display: none !important; }
 .catch-cat .kitten-paw { animation: none; }
 
 .catch-cat.is-swat .kitten-paw { animation: kitten-swat 0.32s ease-out 1; }
+
+.catch-cat.is-reek { animation: cat-ew 0.55s ease-out; }
+
+.stinkbug {
+  position: absolute;
+  z-index: 3;
+  width: 58px;
+  height: 46px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: default;
+}
+
+.stinkbug svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  transform-origin: 50% 60%;
+  animation: bug-wiggle 0.32s ease-in-out infinite;
+}
+
+.stinkbug.is-stink {
+  pointer-events: none;
+  animation: bug-poof 0.32s ease-out forwards;
+}
+
+.stinkbug.is-stink svg { animation: none; }
+
+.stink-bit {
+  position: absolute;
+  z-index: 4;
+  width: 11px;
+  height: 11px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: rgba(168, 204, 78, 0.8);
+  box-shadow: 0 0 8px rgba(176, 214, 82, 0.7);
+  pointer-events: none;
+  animation: bit-fly 0.4s ease-out forwards;
+}
 
 .bauble {
   position: absolute;
@@ -184,6 +227,20 @@ html.advent-open .loader { display: none !important; }
 
 @keyframes bit-fly {
   to { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+}
+
+@keyframes bug-wiggle {
+  50% { transform: rotate(-8deg); }
+}
+
+@keyframes bug-poof {
+  40% { transform: scale(1.25); }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes cat-ew {
+  30% { filter: sepia(0.55) hue-rotate(50deg) saturate(1.6); }
+  100% { filter: none; }
 }
 
 .catch-hint {

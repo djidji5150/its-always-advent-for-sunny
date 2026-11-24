@@ -633,15 +633,91 @@
       }, 280);
     }
 
-    function pawHits(ball) {
-      if (!ball.el) return false;
+    var bugs = [];
+    var bugIn = 1600;
+
+    function pace() {
+      return {
+        bubbleVy: Math.min(380, 100 + score * 18),
+        bugVy: Math.min(320, 78 + score * 16),
+        drift: Math.min(110, 12 + score * 9),
+        bubbleGap: Math.max(240, 980 - score * 55),
+        bugGap: Math.max(620, 3400 - score * 240),
+        maxBubbles: Math.min(6, 3 + Math.floor(score / 3)),
+        maxBugs: score >= 6 ? 2 : 1
+      };
+    }
+
+    function overlaps(el, inset) {
+      if (!el) return false;
       var catRect = cat.getBoundingClientRect();
-      var ballRect = ball.el.getBoundingClientRect();
-      var bx = ballRect.left + ballRect.width / 2;
-      var by = ballRect.top + ballRect.height / 2;
-      var pad = 8;
-      return bx >= catRect.left - pad && bx <= catRect.right + pad
-        && by >= catRect.top + 8 && by <= catRect.bottom - 10;
+      var rect = el.getBoundingClientRect();
+      var bx = rect.left + rect.width / 2;
+      var by = rect.top + rect.height / 2;
+      var shrink = catRect.width * inset;
+      return bx >= catRect.left + shrink && bx <= catRect.right - shrink
+        && by >= catRect.top + 10 && by <= catRect.bottom - 8;
+    }
+
+    function openX(width) {
+      var room = Math.max(20, field.clientWidth - width - 8);
+      var x = 8 + Math.random() * room;
+      for (var tries = 0; tries < 6; tries++) {
+        var guess = 8 + Math.random() * room;
+        var crowded = false;
+        balls.forEach(function (ball) {
+          if (ball.el && ball.y < 90 && Math.abs(ball.x - guess) < 62) crowded = true;
+        });
+        bugs.forEach(function (bug) {
+          if (bug.el && bug.y < 90 && Math.abs(bug.x - guess) < 62) crowded = true;
+        });
+        if (!crowded) return guess;
+        x = guess;
+      }
+      return x;
+    }
+
+    function puff(el) {
+      var fieldRect = field.getBoundingClientRect();
+      var rect = el.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2 - fieldRect.left;
+      var cy = rect.top + rect.height / 2 - fieldRect.top;
+      for (var i = 0; i < 6; i++) {
+        var bit = document.createElement("span");
+        bit.className = "stink-bit";
+        bit.setAttribute("aria-hidden", "true");
+        bit.style.left = cx + "px";
+        bit.style.top = cy + "px";
+        var angle = (Math.PI * 2 * i) / 6;
+        var dist = 22 + Math.random() * 18;
+        bit.style.setProperty("--dx", (Math.cos(angle) * dist) + "px");
+        bit.style.setProperty("--dy", (Math.sin(angle) * dist - 10) + "px");
+        field.appendChild(bit);
+        window.setTimeout(function (node) { node.remove(); }, 420, bit);
+      }
+    }
+
+    function sting(bug) {
+      if (!bug.el || bug.gone) return;
+      bug.gone = true;
+      miss();
+      var bugRect = bug.el.getBoundingClientRect();
+      var catRect = cat.getBoundingClientRect();
+      var center = catRect.left + catRect.width / 2;
+      var dir = (bugRect.left + bugRect.width / 2) < center ? 1 : -1;
+      slideCat(center + dir * 130);
+      cat.classList.remove("is-reek");
+      void cat.offsetWidth;
+      cat.classList.add("is-reek");
+      var el = bug.el;
+      el.classList.add("is-stink");
+      el.disabled = true;
+      puff(el);
+      window.setTimeout(function () {
+        if (el.parentNode) el.remove();
+        bug.el = null;
+        cat.classList.remove("is-reek");
+      }, 340);
     }
 
     function spawn() {
@@ -649,11 +725,10 @@
       btn.type = "button";
       btn.className = "bauble" + (Math.random() > 0.45 ? " bauble--gold" : "");
       btn.setAttribute("aria-label", "Catch bubble");
-      var room = Math.max(20, field.clientWidth - 64);
-      var x = 8 + Math.random() * room;
+      var x = openX(52);
       btn.style.left = x + "px";
       btn.style.top = "-56px";
-      var ball = { el: btn, y: -56, vy: Math.min(240, 110 + score * 8) };
+      var ball = { el: btn, x: x, y: -56, vy: pace().bubbleVy };
       btn.addEventListener("pointerdown", function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -663,8 +738,43 @@
       balls.push(ball);
     }
 
+    function spawnBug() {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "stinkbug";
+      btn.setAttribute("aria-label", "Stink bug. Avoid.");
+      btn.innerHTML = '<svg viewBox="0 0 68 52" aria-hidden="true">'
+        + '<path d="M30 16C22 6 24 1 30 0M38 16C46 6 44 1 38 0" fill="none" stroke="#2c2416" stroke-width="1.6" stroke-linecap="round"/>'
+        + '<path d="M18 26c-12 1-16 8-12 13M16 32c-14 4-14 12-6 14M50 26c12 1 16 8 12 13M52 32c14 4 14 12 6 14M24 38c-10 6-9 13-2 15M44 38c10 6 9 13 2 15" fill="none" stroke="#3a2e16" stroke-width="1.8" stroke-linecap="round"/>'
+        + '<path d="M34 12c12 0 20 7 22 16 2 11-5 18-14 20-7 1-16 1-22 0C10 46 4 38 6 28 8 18 20 12 34 12z" fill="#6d7c32"/>'
+        + '<path d="M34 18c8 1 14 5 16 11-10 2-22 2-32 0 2-7 8-12 16-11z" fill="#96a448"/>'
+        + '<path d="M34 18l10 10-10 16-10-10z" fill="#556428"/>'
+        + '<path d="M16 30h36" fill="none" stroke="#3f4a1c" stroke-width="1.2" opacity="0.7"/>'
+        + '<circle cx="24" cy="31" r="1.5" fill="#31400f"/><circle cx="44" cy="30" r="1.4" fill="#31400f"/>'
+        + '<circle cx="28" cy="37" r="1.3" fill="#31400f"/><circle cx="41" cy="36" r="1.2" fill="#31400f"/>'
+        + '<ellipse cx="34" cy="16" rx="6.2" ry="4" fill="#5c692c"/>'
+        + '<circle cx="31.2" cy="15.4" r="1" fill="#16110c"/><circle cx="36.8" cy="15.4" r="1" fill="#16110c"/>'
+        + '</svg>';
+      var x = openX(58);
+      btn.style.left = x + "px";
+      btn.style.top = "-52px";
+      var bug = {
+        el: btn,
+        x: x,
+        y: -52,
+        vy: pace().bugVy,
+        vx: (Math.random() < 0.5 ? -1 : 1) * pace().drift
+      };
+      btn.addEventListener("pointerdown", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+      field.appendChild(btn);
+      bugs.push(bug);
+    }
+
     field.addEventListener("pointerdown", function (event) {
-      if (event.target.closest && event.target.closest(".bauble")) return;
+      if (event.target.closest && (event.target.closest(".bauble") || event.target.closest(".stinkbug"))) return;
       slideCat(event.clientX);
     });
 
@@ -672,19 +782,50 @@
       if (!running || loader.hidden) return;
       var dt = last ? Math.min(0.034, (now - last) / 1000) : 0;
       last = now;
+      var step = pace();
       spawnIn -= dt * 1000;
+      bugIn -= dt * 1000;
       var alive = 0;
       balls.forEach(function (ball) { if (ball.el) alive += 1; });
-      if (spawnIn <= 0 && alive < 4) {
+      if (spawnIn <= 0 && alive < step.maxBubbles) {
         spawn();
-        spawnIn = Math.max(420, 860 - score * 30);
+        spawnIn = step.bubbleGap;
+      }
+      var bugsAlive = 0;
+      bugs.forEach(function (bug) { if (bug.el) bugsAlive += 1; });
+      if (bugIn <= 0 && bugsAlive < step.maxBugs) {
+        spawnBug();
+        bugIn = step.bugGap;
       }
       var floor = field.clientHeight - 28;
+      var stung = false;
+      var maxX = Math.max(8, field.clientWidth - 62);
+      bugs.forEach(function (bug) {
+        if (!bug.el || bug.gone) return;
+        bug.vy = step.bugVy;
+        bug.vx = (bug.vx < 0 ? -1 : 1) * step.drift;
+        bug.y += bug.vy * dt;
+        bug.x += bug.vx * dt;
+        if (bug.x < 6) { bug.x = 6; bug.vx = Math.abs(bug.vx); }
+        if (bug.x > maxX) { bug.x = maxX; bug.vx = -Math.abs(bug.vx); }
+        bug.el.style.top = bug.y + "px";
+        bug.el.style.left = bug.x + "px";
+        if (overlaps(bug.el, 0.2)) {
+          sting(bug);
+          stung = true;
+          return;
+        }
+        if (bug.y >= floor) {
+          bug.el.remove();
+          bug.el = null;
+        }
+      });
       balls.forEach(function (ball) {
         if (!ball.el || ball.popping) return;
+        ball.vy = step.bubbleVy;
         ball.y += ball.vy * dt;
         ball.el.style.top = ball.y + "px";
-        if (pawHits(ball)) {
+        if (!stung && overlaps(ball.el, 0.06)) {
           pop(ball);
           return;
         }
@@ -695,6 +836,7 @@
         }
       });
       balls = balls.filter(function (ball) { return ball.el; });
+      bugs = bugs.filter(function (bug) { return bug.el; });
       window.requestAnimationFrame(frame);
     }
 
