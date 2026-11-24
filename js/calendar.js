@@ -563,18 +563,50 @@
     var scoreEl = document.getElementById("catch-now");
     var bestEl = document.getElementById("catch-best");
     if (!field || !cat || !loader) return;
-    var score = 0;
-    var best = 0;
-    try { best = Number(sessionStorage.getItem("sunny-catch-best")) || 0; } catch (err) {}
-    if (bestEl) bestEl.textContent = String(best);
+
+    function loadSave() {
+      var blank = { best: 0, score: 0, lives: 9 };
+      try {
+        var raw = localStorage.getItem("sunny-catch");
+        if (raw) {
+          var data = JSON.parse(raw);
+          var savedBest = Math.max(0, Number(data.best) || 0);
+          var savedScore = Math.max(0, Number(data.score) || 0);
+          var savedLives = Number(data.lives);
+          if (!(savedLives >= 0 && savedLives <= 9)) savedLives = 9;
+          if (savedScore > savedBest) savedBest = savedScore;
+          return { best: savedBest, score: savedScore, lives: savedLives };
+        }
+      } catch (err) {}
+      try {
+        var legacy = Number(sessionStorage.getItem("sunny-catch-best")) || 0;
+        if (legacy > 0) return { best: legacy, score: 0, lives: 9 };
+      } catch (err) {}
+      return blank;
+    }
+
+    var saved = loadSave();
+    var score = saved.score;
+    var best = saved.best;
     var balls = [];
     var last = 0;
     var spawnIn = 500;
     var running = true;
 
+    function remember() {
+      try {
+        localStorage.setItem("sunny-catch", JSON.stringify({
+          best: best,
+          score: score,
+          lives: Math.max(0, Math.min(9, lives))
+        }));
+      } catch (err) {}
+    }
+
     function showScore() {
       if (scoreEl) scoreEl.textContent = String(score);
       if (bestEl) bestEl.textContent = String(best);
+      if (typeof lives === "number") remember();
     }
 
     function slideCat(clientX) {
@@ -583,11 +615,6 @@
       var half = cat.offsetWidth / 2;
       var next = Math.max(half, Math.min(rect.width - half, local));
       cat.style.left = next + "px";
-    }
-
-    function miss() {
-      score = 0;
-      showScore();
     }
 
     function burst(el) {
@@ -615,10 +642,7 @@
       if (!ball.el || ball.popping) return;
       ball.popping = true;
       score += 1;
-      if (score > best) {
-        best = score;
-        try { sessionStorage.setItem("sunny-catch-best", String(best)); } catch (err) {}
-      }
+      if (score > best) best = score;
       showScore();
       cat.classList.remove("is-swat");
       void cat.offsetWidth;
@@ -636,11 +660,18 @@
     var livesEl = document.getElementById("catch-lives");
     var overEl = document.getElementById("catch-over");
     var againEl = document.getElementById("catch-again");
-    var lives = 9;
+    var lives = saved.lives;
     var hurtUntil = 0;
     var over = false;
     var bugs = [];
     var bugIn = 1600;
+    if (lives <= 0) {
+      lives = 0;
+      over = true;
+      running = false;
+      if (overEl) overEl.hidden = false;
+    }
+    showScore();
     showLives();
 
     function showLives() {
@@ -649,6 +680,7 @@
       for (var i = 0; i < marks.length; i++) marks[i].classList.toggle("is-lost", i >= lives);
       var left = Math.max(0, lives);
       livesEl.setAttribute("aria-label", left + (left === 1 ? " life left" : " lives left"));
+      remember();
     }
 
     function clearActors() {
@@ -894,7 +926,6 @@
         if (ball.y >= floor) {
           ball.el.remove();
           ball.el = null;
-          miss();
         }
       });
       balls = balls.filter(function (ball) { return ball.el; });
@@ -902,7 +933,7 @@
       if (running && !over && !loader.hidden) window.requestAnimationFrame(frame);
     }
 
-    window.requestAnimationFrame(frame);
+    if (running) window.requestAnimationFrame(frame);
   }
 
   buildDoors();
