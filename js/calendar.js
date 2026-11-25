@@ -4,6 +4,7 @@
   var SESSION_KEY = "sunny-session";
   var CATCH_LEGACY_KEY = "sunny-catch";
   var CATCH_CLAIMED_KEY = "sunny-catch-claimed";
+  var HIGHSCORE_KEY = "sunny-highscores";
   var PASSWORD_SHA256 = {
     bighardsun: "5f0f6a885b38d2d370df9daccca0d719630882368143217858f1bec9a1a7378b",
     admin: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
@@ -19,6 +20,134 @@
 
   function catchStorageKey(username) {
     return "sunny-catch:" + username;
+  }
+
+  function wholeBest(value) {
+    var number = Number(value);
+    if (!isFinite(number) || number <= 0) return 0;
+    return Math.floor(number);
+  }
+
+  function readHighscores() {
+    try {
+      var stored = JSON.parse(localStorage.getItem(HIGHSCORE_KEY) || "[]");
+      if (!Array.isArray(stored)) return [];
+      var bestByName = {};
+      stored.forEach(function (row) {
+        if (!row || typeof row.name !== "string") return;
+        if (!Object.prototype.hasOwnProperty.call(PASSWORD_SHA256, row.name)) return;
+        var best = wholeBest(row.best);
+        if (!Object.prototype.hasOwnProperty.call(bestByName, row.name) || best > bestByName[row.name]) {
+          bestByName[row.name] = best;
+        }
+      });
+      return Object.keys(bestByName).map(function (name) {
+        return { name: name, best: bestByName[name] };
+      });
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function writeHighscores(rows) {
+    try {
+      localStorage.setItem(HIGHSCORE_KEY, JSON.stringify(rows));
+    } catch (err) {}
+  }
+
+  function bestFromCatch(username) {
+    try {
+      var raw = localStorage.getItem(catchStorageKey(username));
+      if (!raw) return null;
+      var data = JSON.parse(raw);
+      return wholeBest(Math.max(Number(data.best) || 0, Number(data.score) || 0));
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function rememberBest(username, best) {
+    if (!username || !Object.prototype.hasOwnProperty.call(PASSWORD_SHA256, username)) return false;
+    var value = wholeBest(best);
+    var rows = readHighscores();
+    var current = null;
+    rows.forEach(function (row) {
+      if (row.name === username) current = row;
+    });
+    if (current && value <= current.best) return false;
+    if (current) current.best = value;
+    else rows.push({ name: username, best: value });
+    writeHighscores(rows);
+    return true;
+  }
+
+  function highscoreRows(username) {
+    var bestByName = {};
+    readHighscores().forEach(function (row) {
+      bestByName[row.name] = row.best;
+    });
+    Object.keys(PASSWORD_SHA256).forEach(function (name) {
+      var saved = bestFromCatch(name);
+      if (saved == null) return;
+      if (!Object.prototype.hasOwnProperty.call(bestByName, name) || saved > bestByName[name]) {
+        bestByName[name] = saved;
+      }
+    });
+    if (
+      username &&
+      Object.prototype.hasOwnProperty.call(PASSWORD_SHA256, username) &&
+      !Object.prototype.hasOwnProperty.call(bestByName, username)
+    ) {
+      bestByName[username] = 0;
+    }
+    var rows = Object.keys(bestByName).map(function (name) {
+      return { name: name, best: bestByName[name] };
+    });
+    rows.sort(function (a, b) {
+      if (b.best !== a.best) return b.best - a.best;
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
+    writeHighscores(rows);
+    return rows;
+  }
+
+  function paintHighscores() {
+    var username = currentUser();
+    var rows = username ? highscoreRows(username) : [];
+    [document.getElementById("catch-scores"), document.getElementById("home-scores")].forEach(function (block) {
+      if (!block) return;
+      var list = block.querySelector(".scores-list");
+      if (!list) return;
+      list.replaceChildren();
+      if (!rows.length) {
+        block.hidden = true;
+        return;
+      }
+      block.hidden = false;
+      rows.forEach(function (row, index) {
+        var item = document.createElement("li");
+        if (row.name === username) item.className = "is-you";
+        var place = document.createElement("span");
+        place.className = "scores-place";
+        place.textContent = String(index + 1);
+        var name = document.createElement("span");
+        name.className = "scores-name";
+        name.textContent = row.name;
+        var best = document.createElement("span");
+        best.className = "scores-best";
+        best.textContent = String(row.best);
+        var unit = document.createElement("span");
+        unit.className = "visually-hidden";
+        unit.textContent = " streak";
+        best.appendChild(unit);
+        item.appendChild(place);
+        item.appendChild(name);
+        item.appendChild(best);
+        list.appendChild(item);
+      });
+    });
   }
 
   function sha256Hex(text) {
@@ -772,6 +901,7 @@
       score += 1;
       if (score > best) best = score;
       showScore();
+      if (rememberBest(player, best)) paintHighscores();
       cat.classList.remove("is-swat");
       void cat.offsetWidth;
       cat.classList.add("is-swat");
@@ -1068,6 +1198,7 @@
   paint();
   syncWaiting(getNow());
   paintLoader(getNow());
+  paintHighscores();
   window.setInterval(function () {
     var now = getNow();
     paint();

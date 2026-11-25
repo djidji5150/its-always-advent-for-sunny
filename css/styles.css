@@ -213,6 +213,64 @@ html.advent-open .loader { display: none !important; }
 
 .catch-lives i.is-lost { color: rgba(255, 250, 242, 0.28); }
 
+.scores {
+  width: min(16rem, 100%);
+  margin: 0.35rem auto 0.05rem;
+  text-align: left;
+}
+
+.scores[hidden] { display: none !important; }
+
+.scores--home { margin: 16px auto 0; }
+
+.scores-kicker {
+  margin: 0;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #f3d7a1;
+}
+
+.scores-list {
+  display: grid;
+  gap: 0.08rem;
+  margin: 0.22rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scores-list li {
+  display: grid;
+  grid-template-columns: 1.15rem minmax(0, 1fr) auto;
+  gap: 0.4rem;
+  align-items: baseline;
+  padding: 0.08rem 0.1rem 0.14rem;
+  border-bottom: 1px solid rgba(240, 211, 148, 0.28);
+  color: #fffaf2;
+  font-size: 0.84rem;
+  line-height: 1.2;
+}
+
+.scores-list li:last-child { border-bottom: 0; }
+
+.scores-list li.is-you .scores-name { color: #f3d7a1; }
+
+.scores-place,
+.scores-best {
+  font-family: Fraunces, Palatino, "Palatino Linotype", serif;
+  font-variant-numeric: tabular-nums;
+  color: #f0d394;
+}
+
+.scores-name {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .catch-over {
   position: absolute;
   inset: 0;

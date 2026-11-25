@@ -29,7 +29,7 @@
       html.is-signed-in .sign-out { display: inline-block; }
       html.is-locked { overflow: hidden; }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=gate" />
+    <link rel="stylesheet" href="css/styles.css?v=highscores" />
     <script>
       (function () {
         try {
@@ -83,6 +83,10 @@
         <div class="catch" id="catch">
           <p class="catch-score">Streak <strong id="catch-now">0</strong> · Best <strong id="catch-best">0</strong></p>
           <p class="catch-lives" id="catch-lives" aria-label="9 lives left"><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i><i aria-hidden="true">♥</i></p>
+          <div class="scores" id="catch-scores" hidden>
+            <p class="scores-kicker" id="catch-scores-title">High scores</p>
+            <ol class="scores-list" id="catch-scores-list" aria-labelledby="catch-scores-title"></ol>
+          </div>
           <div class="catch-field" id="catch-field">
             <div class="catch-cat" id="catch-cat" aria-hidden="true">
               <svg viewBox="0 -16 168 108">
@@ -176,6 +180,10 @@
         </p>
         <p class="status" id="status"></p>
         <p class="preview-banner" id="preview-banner" hidden></p>
+        <div class="scores scores--home" id="home-scores" hidden>
+          <p class="scores-kicker" id="home-scores-title">High scores</p>
+          <ol class="scores-list" id="home-scores-list" aria-labelledby="home-scores-title"></ol>
+        </div>
         <div class="wait-row">
           <button type="button" class="wait-tab" id="wait-tab">While you wait</button>
         </div>
@@ -280,7 +288,7 @@
     <noscript>
       <p class="noscript">This calendar needs JavaScript so the doors know what time it is.</p>
     </noscript>
-    <script src="js/recipes.js?v=gate"></script>
-    <script src="js/calendar.js?v=gate"></script>
+    <script src="js/recipes.js?v=highscores"></script>
+    <script src="js/calendar.js?v=highscores"></script>
   </body>
 </html>
